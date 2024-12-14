@@ -63,6 +63,9 @@ pub trait Semigroup<O>: Magma<O> {}
 /// Formally, for all *x* ∈ *X*, there exists a *y* ∈ *X* such that *xy* = *yx* = *i*, where *i* is
 /// the identity in *X*.
 ///
+/// We also need [`PartialEq`] for the above definition to make sense. We could require [`Eq`], but
+/// if the user of the librarywants to use floats, it may be useful to not require reflexivity.
+///
 /// # Example
 ///
 /// The integers with subtraction form a quasigroup. We'll panic if we exceed [`isize::MAX`] or
@@ -71,6 +74,7 @@ pub trait Semigroup<O>: Magma<O> {}
 /// ```rust
 /// use yaaarc::{operators::BinaryOperator, grouplike::{Magma, Quasigroup}};
 ///
+/// #[derive(PartialEq)]
 /// struct Z(isize);
 ///
 /// impl BinaryOperator<()> for Z {
@@ -89,7 +93,7 @@ pub trait Semigroup<O>: Magma<O> {}
 ///     }
 /// }
 /// ```
-pub trait Quasigroup<O>: Magma<O> {
+pub trait Quasigroup<O>: Magma<O> + PartialEq {
     /// Finds the inverse for the `self` element in the set.
     fn inverse(&self) -> Self;
 }
@@ -177,6 +181,7 @@ pub trait Group<O>: Semigroup<O> + UnitalMagma<O> + Quasigroup<O> {}
 ///     },
 /// };
 ///
+/// #[derive(PartialEq)]
 /// struct Z(isize);
 ///
 /// // For this example, we can just use the unit type as the generic because we don't intend to
